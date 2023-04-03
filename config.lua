@@ -11,7 +11,7 @@ an executable
 -- general
 lvim.log.level = "info"
 lvim.format_on_save.enabled = true
-lvim.colorscheme = "onedark_dark"
+lvim.colorscheme = "lunar"
 -- to disable icons and use a minimalist setup, uncomment the following
 lvim.use_icons = true
 
@@ -33,12 +33,20 @@ lvim.keys.normal_mode["<leader>8"] = ":BufferLineGoToBuffer 8<CR>"
 lvim.keys.normal_mode["<leader>9"] = ":BufferLineGoToBuffer 9<CR>"
 lvim.keys.normal_mode["<leader>0"] = ":BufferLineGoToBuffer -1<CR>"
 lvim.keys.normal_mode["<C-S>"] = ":wa<CR>"
-lvim.keys.normal_mode["<C-n"] = ":enew<CR>"
+lvim.keys.normal_mode["<leader>nt"] = ":enew<CR>"
 lvim.keys.normal_mode["<leader>ui"] = ":TroubleToggle<CR>"
-lvim.keys.normal_mode["<C-t><C-y>"] = ":w<CR> :bd<CR>"
-lvim.keys.normal_mode["<C-t><C-t>"] = ":bd<CR>"
-lvim.keys.normal_mode["<C-T><C-Y>"] = ":wa<CR> :bda<CR>"
-lvim.keys.normal_mode["<C-T><C-T>"] = ":bda<CR>"
+lvim.keys.normal_mode["<leader>ty"] = ":w<CR> :bd<CR>"
+lvim.keys.normal_mode["<leader>tn"] = ":bd!<CR>"
+lvim.keys.normal_mode["<leader<S-t><S-y>"] = ":wa<CR> :%bd<CR>"
+lvim.keys.normal_mode["<leader><S-t><S-n>"] = ":%bd!<CR>"
+lvim.keys.normal_mode["<leader><leader>e"] = ":NvimTreeFocus<CR>"
+lvim.lsp.buffer_mappings.normal_mode["<leader>rn"] = { vim.lsp.buf.rename, "Rename symbol" }
+lvim.keys.visual_mode["n"] = "<ESC>";
+lvim.keys.normal_mode["s"] = false
+lvim.keys.normal_mode["S"] = false
+lvim.keys.normal_mode["<S-s>"] = false
+lvim.keys.normal_mode["gs"] = false
+lvim.builtin.treesitter.autotag.enable = true
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
 -- override a default keymapping
@@ -205,7 +213,55 @@ lvim.plugins = {
     "nvim-telescope/telescope-live-grep-args.nvim",
     run = "make",
     event = "BufRead"
-  }
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-refactor",
+    event = "BufRead",
+    config = function()
+      require 'nvim-treesitter.configs'.setup {
+        refactor = {
+          highlight_current_scope = { enable = true },
+          highlight_definitions = {
+            enable = true,
+            clear_on_cursor_move = true,
+          }
+        }
+      }
+    end
+  },
+  {
+    "ggandor/lightspeed.nvim",
+    config = function()
+      require 'lightspeed'.setup {
+        ignore_case = true,
+        exit_after_idle_msecs = { unlabeled = nil, labeled = nil },
+        --- s/x ---
+        jump_to_unique_chars = { safety_timeout = 400 },
+        match_only_the_start_of_same_char_seqs = true,
+        force_beacons_into_match_width = false,
+        -- Display characters in a custom way in the highlighted matches.
+        substitute_chars = { ['\r'] = '¬',[' '] = '🚀' },
+        -- Leaving the appropriate list empty effectively disables "smart" mode,
+        -- and forces auto-jump to be on or off.
+        -- safe_labels = {},
+        -- labels = {},
+        -- These keys are captured directly by the plugin at runtime.
+        special_keys = {
+          next_match_group = '<space>',
+          prev_match_group = '<tab>',
+        },
+        --- f/t ---
+        limit_ft_matches = 4,
+        repeat_ft_with_target_char = false,
+      }
+    end
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
