@@ -1,17 +1,12 @@
---[[
-lvim is the global options object
-
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+local function toggle_relative_number()
+    vim.wo.relativenumber = vim.wo.relativenumber ~= true
+end
 
 -- general
 lvim.log.level = "info"
 lvim.format_on_save.enabled = true
-lvim.colorscheme = "lunar"
+lvim.colorscheme = "onedark"
+-- lvim.builtin.lualine.options.theme = "default"
 -- to disable icons and use a minimalist setup, uncomment the following
 lvim.use_icons = true
 
@@ -46,7 +41,7 @@ lvim.keys.normal_mode["s"] = false
 lvim.keys.normal_mode["S"] = false
 lvim.keys.normal_mode["<S-s>"] = false
 lvim.keys.normal_mode["gs"] = false
-lvim.builtin.treesitter.autotag.enable = true
+lvim.keys.normal_mode["<leader>tln"] = {toggle_relative_number(), "Toggle relative number"}
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
 -- override a default keymapping
@@ -104,27 +99,30 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = nil
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
-  "c",
-  "lua",
+  -- "c",
+  -- "lua",
   "rust",
-  "c_sharp"
+  "c_sharp",
+  "tsx",
+  -- "css"
 }
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
+lvim.builtin.treesitter.autoinstall = true
 
 -- generic LSP settings
 
 -- -- make sure server will always be installed even if the server is in skipped_servers list
 lvim.lsp.installer.setup.ensure_installed = {
-  "sumneko_lua",
-  "jsonls",
+  -- "sumneko_lua",
+  -- "jsonls",
   "rust_analyzer",
-  "angularls",
+  -- "angularls",
   "csharp_ls",
-  "omnisharp",
-  "html",
-  "cssls",
+  -- "omnisharp",
+  -- "html",
+  -- "cssls",
   "tsserver"
 }
 -- -- change UI setting of `LspInstallInfo`
@@ -240,7 +238,7 @@ lvim.plugins = {
         match_only_the_start_of_same_char_seqs = true,
         force_beacons_into_match_width = false,
         -- Display characters in a custom way in the highlighted matches.
-        substitute_chars = { ['\r'] = '¬',[' '] = '🚀' },
+        substitute_chars = { ['\r'] = '¬',[' '] = '⎵' },
         -- Leaving the appropriate list empty effectively disables "smart" mode,
         -- and forces auto-jump to be on or off.
         -- safe_labels = {},
@@ -252,7 +250,7 @@ lvim.plugins = {
         },
         --- f/t ---
         limit_ft_matches = 4,
-        repeat_ft_with_target_char = false,
+        repeat_ft_with_target_char = false, 
       }
     end
   },
@@ -278,6 +276,7 @@ lvim.plugins = {
 --   end,
 -- })
 --Bufferline
+
 lvim.builtin.bufferline.options.numbers = function(opts)
   return string.format('%s', opts.raise(opts.ordinal))
 end
